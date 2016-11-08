@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.IO;
 using System.Diagnostics;
+using System.Windows;
 
 namespace DxConverterCommand {
     /// <summary>
@@ -90,7 +91,7 @@ namespace DxConverterCommand {
         /// <param name="e">Event args.</param>
 
         string _solutionDir;
-        public const string workPath= @"c:\Dropbox\Deploy\DXConverterDeploy\";
+        public const string workPath = @"c:\Dropbox\Deploy\DXConverterDeploy\";
         private void MenuItemCallback(object sender, EventArgs e) {
             string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
             string title = "ConvertProject";
@@ -110,17 +111,22 @@ namespace DxConverterCommand {
                 else {
                     _solutionDir = Path.GetDirectoryName(dte.Solution.Projects.Item(1).FullName);
                 }
-                using (VersionChooserForm form = new VersionChooserForm(_solutionDir, version)) {
-                    form.ShowDialog();
-                    if (form.DialogResult == System.Windows.Forms.DialogResult.OK) {
-                        string st = string.Format("\"{0}\" \"{1}\"", _solutionDir, form.Version);
-                        ProcessStartInfo startInfo = new ProcessStartInfo();
-                        // startInfo.FileName = @"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe";
-                        startInfo.FileName =Path.Combine(workPath, "DXConverter.exe");
-                        startInfo.Arguments = st;
-                        Process.Start(startInfo);
-                    }
+
+                VersionChooser form = new VersionChooser(_solutionDir, version) ;
+                var wnd = new Window();
+                wnd.Width = 460;
+                wnd.Height = 200;
+                wnd.Content = form;
+                wnd.ShowDialog();
+                if (wnd.DialogResult == true) {
+                    string st = string.Format("\"{0}\" \"{1}\"", _solutionDir, form.Version);
+                    ProcessStartInfo startInfo = new ProcessStartInfo();
+                    startInfo.FileName = Path.Combine(workPath, "DXConverter.exe");
+                    startInfo.Arguments = st;
+                    Process.Start(startInfo);
                 }
+
+
             }
             else {
                 VsShellUtilities.ShowMessageBox(this.ServiceProvider, "wrong project", null, OLEMSGICON.OLEMSGICON_INFO,
