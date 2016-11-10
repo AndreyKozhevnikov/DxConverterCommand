@@ -13,10 +13,18 @@
         </Grid.ColumnDefinitions>
         <StackPanel>
             <ComboBox ItemsSource="{Binding VersionList}" SelectedItem="{Binding ComboBoxSelectedVersion,Mode=TwoWay}"/>
+            <ItemsControl ItemsSource="{Binding InstalledVersionList}" Padding="0,20,0,0">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding}"  Click="InstalledButton_Click"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
-        <StackPanel Grid.Column="2">
-            <Button Content="Convert" Click="Button_Click"/>
-            <Button Content="Update" Click="Button_Click_1"/>
-        </StackPanel>
+        <DockPanel Grid.Column="1" >
+            <Button Content="Convert" Click="ConvertButton_Click"  Height="40" DockPanel.Dock="Top" FontSize="20" FontWeight="Bold"/>
+            <Button Content="Update" Click="UpdateButton_Click_1" DockPanel.Dock="Bottom"  Height="20"/>
+            <Border />
+        </DockPanel>
     </Grid>
 </UserControl>

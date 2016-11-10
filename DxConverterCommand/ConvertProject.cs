@@ -94,9 +94,6 @@ namespace DxConverterCommand {
         public const string workPath = @"c:\Dropbox\Deploy\DXConverterDeploy\";
         private void MenuItemCallback(object sender, EventArgs e) {
             string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "ConvertProject";
-
-
 
             if (dte.Solution.Count == 0) {
                 System.Windows.Forms.MessageBox.Show("Solutions were not found", "Converter Runner");
@@ -115,8 +112,9 @@ namespace DxConverterCommand {
                 VersionChooser form = new VersionChooser(_solutionDir, version) ;
                 var wnd = new Window();
                 wnd.Width = 460;
-                wnd.Height = 200;
+                wnd.SizeToContent = SizeToContent.Height;
                 wnd.Content = form;
+                wnd.Title= "ConvertProject";
                 wnd.ShowDialog();
                 if (wnd.DialogResult == true) {
                     string st = string.Format("\"{0}\" \"{1}\"", _solutionDir, form.Version);
@@ -125,22 +123,12 @@ namespace DxConverterCommand {
                     startInfo.Arguments = st;
                     Process.Start(startInfo);
                 }
-
-
             }
             else {
                 VsShellUtilities.ShowMessageBox(this.ServiceProvider, "wrong project", null, OLEMSGICON.OLEMSGICON_INFO,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                 OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
-            // Show a message box to prove we were here
-            //VsShellUtilities.ShowMessageBox(
-            //    this.ServiceProvider,
-            //    message,
-            //    title,
-            //    OLEMSGICON.OLEMSGICON_INFO,
-            //    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-            //    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
         string GetVSProjectVersion(EnvDTE.Project project) {
             var vsproject = project.Object as VSLangProj.VSProject;
