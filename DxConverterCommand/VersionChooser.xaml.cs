@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -22,24 +23,36 @@ namespace DxConverterCommand {
     /// <summary>
     /// Interaction logic for VersionChooser.xaml
     /// </summary>
-    public partial class VersionChooser : UserControl {
+    public partial class VersionChooser : UserControl, INotifyPropertyChanged {
         public VersionChooser() {
             InitializeComponent();
         }
         public string Version { get; set; }
         public VersionChooser(string _solutionDir, string _version) {
-
-            // tbSolutionPath.Text = _solutionDir;
-            //  Version = _version;
-            //btnConvert.Click += BtnConvert_Click;
-            //btnUpdate.Click += BtnUpdate_Click;
-
             LoadVersionsForComboBox();
             DataContext = this;
             InitializeComponent();
         }
-        public List<string> VersionList { get; set; }
-        public List<string> InstalledVersionList { get; set; }
+        List<string> versionList;
+        public List<string> VersionList {
+            get {
+                return versionList;
+            }
+            set {
+                versionList = value;
+                RaisePropertyChanged("VersionList");
+            }
+        }
+        List<string> installedVersionList;
+        public List<string> InstalledVersionList {
+            get {
+                return installedVersionList;
+            }
+            set {
+                installedVersionList = value;
+                RaisePropertyChanged("InstalledVersionList");
+            }
+        }
         public string ComboBoxSelectedVersion { get; set; }
         void LoadVersionsForComboBox() {
             string filePath = Path.Combine(ConvertProject.workPath, "versions.xml");
@@ -89,10 +102,11 @@ namespace DxConverterCommand {
             List<string> installedVersion = GetInstalledVersions();
             string versionsToString = string.Join("\n", versions);
             string installedVersionsToString = string.Join("\n", installedVersion);
-            
+
             XElement xAllVersion = new XElement("AllVersions");
             xAllVersion.Value = versionsToString;
-
+            VersionList = versions;
+            InstalledVersionList = installedVersion;
             XElement xInstalledVersion = new XElement("InstalledVersions");
             xInstalledVersion.Value = installedVersionsToString;
 
@@ -100,7 +114,7 @@ namespace DxConverterCommand {
             xVersions.Add(xAllVersion);
             xVersions.Add(xInstalledVersion);
 
-            
+
             var xDoc = new XDocument();
             xDoc.Add(xVersions);
             string fileXDocPath = Path.Combine(ConvertProject.workPath, "versions.xml");
@@ -142,6 +156,12 @@ namespace DxConverterCommand {
                 resList.Add(projectUpgradeToolPath);
             }
             return resList;
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged(String propertyName) {
+            if (PropertyChanged != null) {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
     }
