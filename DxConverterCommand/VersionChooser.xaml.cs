@@ -32,6 +32,7 @@ namespace DxConverterCommand {
             LoadVersionsForComboBox();
             DataContext = this;
             InitializeComponent();
+            ComboBoxSelectedVersion = _version;
         }
         List<string> versionList;
         public List<string> VersionList {
@@ -53,7 +54,16 @@ namespace DxConverterCommand {
                 RaisePropertyChanged("InstalledVersionList");
             }
         }
-        public string ComboBoxSelectedVersion { get; set; }
+        string comboBoxSelectedVersion;
+        public string ComboBoxSelectedVersion {
+            get {
+                return comboBoxSelectedVersion;
+            }
+            set {
+                comboBoxSelectedVersion = value;
+                RaisePropertyChanged("ComboBoxSelectedVersion");
+            }
+        }
         void LoadVersionsForComboBox() {
             string filePath = Path.Combine(ConvertProject.workPath, "versions.xml");
             var xDoc = XDocument.Load(filePath);
