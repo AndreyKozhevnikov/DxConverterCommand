@@ -65,8 +65,9 @@ namespace DxConverterCommand {
             }
         }
         void LoadVersionsForComboBox() {
-            string filePath = Path.Combine(ConvertProject.workPath, "versions.xml");
-            var xDoc = XDocument.Load(filePath);
+      
+
+            var xDoc = XDocument.Load(ConvertProject.versionsPath);
             var allVersionsString = xDoc.Element("Versions").Element("AllVersions").Value;
             var allVersionsList = allVersionsString.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             VersionList = allVersionsList.ToList();
@@ -107,7 +108,6 @@ namespace DxConverterCommand {
 
         }
         private void UpdateButton_Click_1(object sender, RoutedEventArgs e) {
-            string filePath = Path.Combine(ConvertProject.workPath, "versions.txt");
             List<string> versions = GetVersions();
             List<string> installedVersion = GetInstalledVersions();
             string versionsToString = string.Join("\n", versions);
@@ -127,8 +127,7 @@ namespace DxConverterCommand {
 
             var xDoc = new XDocument();
             xDoc.Add(xVersions);
-            string fileXDocPath = Path.Combine(ConvertProject.workPath, "versions.xml");
-            xDoc.Save(fileXDocPath);
+            xDoc.Save(ConvertProject.versionsPath);
 
 
             //StreamWriter sw = new StreamWriter(filePath, false);
