@@ -133,7 +133,7 @@ namespace DxConverterCommand {
                 wnd.Title= "ConvertProject";
                 wnd.ShowDialog();
                 if (wnd.DialogResult == true) {
-                    string st = string.Format("\"{0}\" \"{1}\"", _solutionDir, form.Version);
+                    string st = string.Format("\"{0}\" \"{1}\" false \"{2}\"", _solutionDir, form.Version, version);
                     ProcessStartInfo startInfo = new ProcessStartInfo();
                     startInfo.FileName = Path.Combine(workPath, "DXConverter.exe");
                     startInfo.Arguments = st;
