@@ -141,7 +141,7 @@ namespace DxConverterCommand {
                 wnd.Title= "ConvertProject";
                 wnd.ShowDialog();
                 if (wnd.DialogResult == true) {
-                    string st = string.Format("\"{0}\" \"{1}\" false \"{2}\"", _solutionDir, form.Version, version);
+                    string st = string.Format("\"{0}\" \"{1}\" false \"{2}\" \"{3}\"", _solutionDir, form.Version, version,form.InstalledVersionPath);
                     ProcessStartInfo startInfo = new ProcessStartInfo();
                     startInfo.FileName = Path.Combine(workPath, "DXConverter.exe");
                     startInfo.Arguments = st;

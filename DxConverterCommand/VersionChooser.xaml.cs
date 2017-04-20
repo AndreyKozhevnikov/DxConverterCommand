@@ -44,8 +44,8 @@ namespace DxConverterCommand {
                 RaisePropertyChanged("VersionList");
             }
         }
-        List<string> installedVersionList;
-        public List<string> InstalledVersionList {
+        List<XElement> installedVersionList;
+        public List<XElement> InstalledVersionList {
             get {
                 return installedVersionList;
             }
@@ -54,6 +54,8 @@ namespace DxConverterCommand {
                 RaisePropertyChanged("InstalledVersionList");
             }
         }
+
+        
         string comboBoxSelectedVersion;
         public string ComboBoxSelectedVersion {
             get {
@@ -64,12 +66,14 @@ namespace DxConverterCommand {
                 RaisePropertyChanged("ComboBoxSelectedVersion");
             }
         }
+
+        public string InstalledVersionPath { get; set; }
         void LoadVersionsForComboBox() {
             var xDoc = XDocument.Load(ConvertProject.versionsPath);
             var allVersionElement = xDoc.Element("Versions").Element("AllVersions");
             VersionList = allVersionElement.Elements().Select(x => x.Attribute("Version").Value).ToList();
             var installVersionsElement = xDoc.Element("Versions").Element("InstalledVersions");
-            InstalledVersionList = installVersionsElement.Elements().Select(x => x.Attribute("Version").Value).ToList();
+            InstalledVersionList = installVersionsElement.Elements().ToList();
         }
 
         public static List<XElement> GetVersions() {
@@ -102,7 +106,10 @@ namespace DxConverterCommand {
 
         private void InstalledButton_Click(object sender, RoutedEventArgs e) {
             var bt = sender as Button;
-            Version = bt.Content.ToString();
+            var XVersion = bt.DataContext as XElement;
+
+            Version = XVersion.Attribute("Version").Value;
+            InstalledVersionPath = XVersion.Attribute("Path").Value;
             CloseWindow();
 
         }
@@ -115,7 +122,7 @@ namespace DxConverterCommand {
             foreach (var xVer in allVersions)
                 xAllVersion.Add(xVer);
             VersionList = allVersions.Select(x=>x.Attribute("Version").Value).ToList();
-            InstalledVersionList = installedVersion.Select(x => x.Attribute("Version").Value).ToList();
+            InstalledVersionList = installedVersion.ToList();
             XElement xInstalledVersion = new XElement("InstalledVersions");
             foreach (var xVer in installedVersion)
                 xInstalledVersion.Add(xVer);

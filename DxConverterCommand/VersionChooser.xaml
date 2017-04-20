@@ -16,7 +16,7 @@
             <ItemsControl ItemsSource="{Binding InstalledVersionList}" Padding="0,20,0,0">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Content="{Binding}"  Click="InstalledButton_Click"/>
+                        <Button Content="{Binding FirstAttribute.Value}"  Click="InstalledButton_Click"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
