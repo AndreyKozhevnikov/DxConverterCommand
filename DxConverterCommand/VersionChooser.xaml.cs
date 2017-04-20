@@ -65,24 +65,23 @@ namespace DxConverterCommand {
             }
         }
         void LoadVersionsForComboBox() {
-      
-
             var xDoc = XDocument.Load(ConvertProject.versionsPath);
-            var allVersionsString = xDoc.Element("Versions").Element("AllVersions").Value;
-            var allVersionsList = allVersionsString.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            VersionList = allVersionsList.ToList();
-
-            var installedString = xDoc.Element("Versions").Element("InstalledVersions").Value;
-            var installedList = installedString.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            InstalledVersionList = installedList.ToList();
-
+            var allVersionElement = xDoc.Element("Versions").Element("AllVersions");
+            VersionList = allVersionElement.Elements().Select(x => x.Attribute("Version").Value).ToList();
+            var installVersionsElement = xDoc.Element("Versions").Element("InstalledVersions");
+            InstalledVersionList = installVersionsElement.Elements().Select(x => x.Attribute("Version").Value).ToList();
         }
 
-        public static List<string> GetVersions() {
-            List<string> directories = new List<string>();
+        public static List<XElement> GetVersions() {
+            List<XElement> directories = new List<XElement>();
             try {
-                foreach (string directory in Directory.GetDirectories(@"\\CORP\builds\release\DXDlls\"))
-                    directories.Add(Path.GetFileName(directory));
+                var lst = Directory.GetDirectories(@"\\CORP\builds\release\DXDlls\");
+                foreach (string directory in lst) {
+                    var pName = Path.GetFileName(directory);
+                    var xEl = new XElement("Version");
+                    xEl.Add(new XAttribute("Version", pName));
+                    directories.Add(xEl);
+                }
             }
             catch (Exception e) {
                 MessageBox.Show(e.Message);
@@ -108,17 +107,18 @@ namespace DxConverterCommand {
 
         }
         private void UpdateButton_Click_1(object sender, RoutedEventArgs e) {
-            List<string> versions = GetVersions();
-            List<string> installedVersion = GetInstalledVersions();
-            string versionsToString = string.Join("\n", versions);
-            string installedVersionsToString = string.Join("\n", installedVersion);
+            List<XElement> allVersions = GetVersions();
+            List<XElement> installedVersion = GetInstalledVersions();
+            
 
             XElement xAllVersion = new XElement("AllVersions");
-            xAllVersion.Value = versionsToString;
-            VersionList = versions;
-            InstalledVersionList = installedVersion;
+            foreach (var xVer in allVersions)
+                xAllVersion.Add(xVer);
+            VersionList = allVersions.Select(x=>x.Attribute("Version").Value).ToList();
+            InstalledVersionList = installedVersion.Select(x => x.Attribute("Version").Value).ToList();
             XElement xInstalledVersion = new XElement("InstalledVersions");
-            xInstalledVersion.Value = installedVersionsToString;
+            foreach (var xVer in installedVersion)
+                xInstalledVersion.Add(xVer);
 
             XElement xVersions = new XElement("Versions");
             xVersions.Add(xAllVersion);
@@ -134,14 +134,17 @@ namespace DxConverterCommand {
             //sw.Write(versionsToString);
             //sw.Close();
         }
-        List<string> GetInstalledVersions() {
-            List<string> installedVersions = new List<string>();
+        List<XElement> GetInstalledVersions() {
+            List<XElement> installedVersions = new List<XElement>();
             List<string> versions = GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
             const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter-console.exe";
             foreach (string rootPath in versions) {
                 var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
                 string libVersion = GetProjectUpgradeVersion(rootPath2);
-                installedVersions.Add(libVersion);
+                var xEl = new XElement("Version");
+                xEl.Add(new XAttribute("Version", libVersion));
+                xEl.Add(new XAttribute("Path", rootPath2));
+                installedVersions.Add(xEl);
             }
             installedVersions.Sort(new VersionComparer());
             return installedVersions;
@@ -175,12 +178,15 @@ namespace DxConverterCommand {
 
     }
 
-    public class VersionComparer : IComparer<string> {
+    public class VersionComparer : IComparer<XElement> {
 
-        public int Compare(string x, string y) {
+      
+        public int Compare(XElement xLx, XElement xLy) {
+            var x = xLx.Attribute("Version").Value;
+            var y = xLy.Attribute("Version").Value;
             int counter = 0, res = 0;
             while (counter < 3 && res == 0) {
-                int versionX = Convert.ToInt32(x.Split('.')[counter].Replace("_new", ""));
+                int versionX = Convert.ToInt32(x.Split('.')[counter]);
                 int versionY = Convert.ToInt32(y.Split('.')[counter]);
                 res = Comparer.Default.Compare(versionX, versionY);
                 counter++;

@@ -96,16 +96,23 @@ namespace DxConverterCommand {
         public const string versionsPath = @"c:\Dropbox\Deploy\DXConverterDeploy\versions.xml";
         private void MenuItemCallback(object sender, EventArgs e) {
 #if DEBUG
-            if (!File.Exists(ConvertProject.versionsPath)) {
-                XElement xAllVersion = new XElement("AllVersions");
-                XElement xInstalledVersion = new XElement("InstalledVersions");
-                XElement xVersions = new XElement("Versions");
-                xVersions.Add(xAllVersion);
-                xVersions.Add(xInstalledVersion);
-                var xDoc = new XDocument();
-                xDoc.Add(xVersions);
-                xDoc.Save(ConvertProject.versionsPath);
-            }
+            //if (!File.Exists(ConvertProject.versionsPath)) {
+            //    XElement xAllVersion = new XElement("AllVersions");
+            //    XElement xInstalledVersion = new XElement("InstalledVersions");
+            //    XElement xVersions = new XElement("Versions");
+            //    xVersions.Add(xAllVersion);
+            //    xVersions.Add(xInstalledVersion);
+            //    var xDoc = new XDocument();
+            //    xDoc.Add(xVersions);
+            //    xDoc.Save(ConvertProject.versionsPath);
+            //}
+            VersionChooser form2 = new VersionChooser(_solutionDir, "test");
+            var wnd2 = new Window();
+            wnd2.Width = 460;
+            wnd2.SizeToContent = SizeToContent.Height;
+            wnd2.Content = form2;
+            wnd2.Title = "ConvertProject";
+            wnd2.ShowDialog();
 #endif
 
 
@@ -115,6 +122,7 @@ namespace DxConverterCommand {
                 System.Windows.Forms.MessageBox.Show("Solutions were not found", "Converter Runner");
                 return;
             }
+
             ProjectType projectType = GetProjectType(dte.Solution.Projects.Item(1));
             if (projectType == ProjectType.VSProject) {
                 string version = GetVSProjectVersion(dte.Solution.Projects.Item(1));
