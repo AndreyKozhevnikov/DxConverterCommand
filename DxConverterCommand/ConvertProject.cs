@@ -44,7 +44,7 @@ namespace DxConverterCommand {
             if (package == null) {
                 throw new ArgumentNullException("package");
             }
-
+            
             this.package = package;
             this.dte = _dte;
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
@@ -133,7 +133,7 @@ namespace DxConverterCommand {
                     _solutionDir = Path.GetDirectoryName(dte.Solution.Projects.Item(1).FullName);
                 }
 
-                VersionChooser form = new VersionChooser(_solutionDir, version) ;
+                VersionChooser form = new VersionChooser(_solutionDir,version) ;
                 var wnd = new Window();
                 wnd.Width = 460;
                 wnd.SizeToContent = SizeToContent.Height;
@@ -141,7 +141,7 @@ namespace DxConverterCommand {
                 wnd.Title= "ConvertProject";
                 wnd.ShowDialog();
                 if (wnd.DialogResult == true) {
-                    string st = string.Format("\"{0}\" \"{1}\" false \"{2}\" \"{3}\"", _solutionDir, form.Version, version,form.InstalledVersionPath);
+                    string st = string.Format("\"{0}\" \"{1}\" true \"{2}\"", _solutionDir, form.Version, form.InstalledVersionPath);
                     ProcessStartInfo startInfo = new ProcessStartInfo();
                     startInfo.FileName = Path.Combine(workPath, "DXConverter.exe");
                     startInfo.Arguments = st;

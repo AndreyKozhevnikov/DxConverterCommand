@@ -67,6 +67,7 @@ namespace DxConverterCommand {
             //    System.Windows.Forms.MessageBox.Show("Solutions were not found", "Converter Runner");
             //    return;
             //}
+            _dte.Solution.SolutionBuild.SolutionConfigurations.Item(2).Activate();
             ConvertProject.Initialize(this,_dte);
             base.Initialize();
         }
