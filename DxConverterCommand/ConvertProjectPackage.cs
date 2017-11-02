@@ -15,6 +15,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
+using System.ComponentModel;
 
 namespace DxConverterCommand {
     /// <summary>
@@ -43,6 +44,7 @@ namespace DxConverterCommand {
         /// <summary>
         /// ConvertProjectPackage GUID string.
         /// </summary>
+        
         public const string PackageGuidString = "c616fdff-2a99-4e89-8c78-530b7e1ef305";
 
         /// <summary>
@@ -71,7 +73,23 @@ namespace DxConverterCommand {
             ConvertProject.Initialize(this,_dte);
             base.Initialize();
         }
-
+        //public string ReferencePath {
+        //    get {
+        //        OptionPageGrid page = (OptionPageGrid)GetDialogPage(typeof(OptionPageGrid));
+        //        return page.ReferencePath;
+        //    }
+        //}
         #endregion
     }
+
+    //public class OptionPageGrid : DialogPage {
+    //    private string refPath = @"C:\{version}\XAF\";
+    //    [Category("Project Converter")]
+    //    [DisplayName("Reference Path")]
+    //    [Description("Xaf Reference Path")]
+    //    public string ReferencePath {
+    //        get { return refPath; }
+    //        set { refPath = value; }
+    //    }
+    //}
 }
