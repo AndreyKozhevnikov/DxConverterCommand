@@ -40,6 +40,7 @@ namespace DxConverterCommand {
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(ConvertProjectPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
+    [ProvideOptionPage(typeof(OptionPageGrid), "XConverter", "Project XConverter", 0, 0, true)]
     public sealed class ConvertProjectPackage : Package {
         /// <summary>
         /// ConvertProjectPackage GUID string.
@@ -69,9 +70,26 @@ namespace DxConverterCommand {
             //    System.Windows.Forms.MessageBox.Show("Solutions were not found", "Converter Runner");
             //    return;
             //}
-            _dte.Solution.SolutionBuild.SolutionConfigurations.Item(2).Activate();
+        //    _dte.Solution.SolutionBuild.SolutionConfigurations.Item(2).Activate();
             ConvertProject.Initialize(this,_dte);
+
+           
+
             base.Initialize();
+        }
+        public string XConverterFolderPath{
+            get {
+                OptionPageGrid page = (OptionPageGrid)GetDialogPage(typeof(OptionPageGrid));
+                var st = page.XConverterPath;
+                return st;
+            }
+        }
+        public bool IsCloseConverter {
+            get {
+                OptionPageGrid page = (OptionPageGrid)GetDialogPage(typeof(OptionPageGrid));
+                var isClose = page.CloseConverterOnFinish;
+                return isClose;
+            }
         }
         //public string ReferencePath {
         //    get {
@@ -82,14 +100,23 @@ namespace DxConverterCommand {
         #endregion
     }
 
-    //public class OptionPageGrid : DialogPage {
-    //    private string refPath = @"C:\{version}\XAF\";
-    //    [Category("Project Converter")]
-    //    [DisplayName("Reference Path")]
-    //    [Description("Xaf Reference Path")]
-    //    public string ReferencePath {
-    //        get { return refPath; }
-    //        set { refPath = value; }
-    //    }
-    //}
+    public class OptionPageGrid : DialogPage {
+        private string xConverterPath = @"\\corp\internal\common\4Kozhevnikov\Deploy\DXConverterDeploy\";
+        [Category("XConverterPath")]
+        [DisplayName("XConverterPath")]
+        [Description("Path to DXConverter folder")]
+        public string XConverterPath {
+            get { return xConverterPath; }
+            set { xConverterPath = value; }
+        }
+
+        bool waitToExit = false;
+        [Category("XConverterPath")]
+        [DisplayName("Close at the end")]
+        [Description("Whether to close a converter console at the end")]
+        public bool CloseConverterOnFinish {
+            get { return waitToExit; }
+            set { waitToExit = value; }
+        }
+    }
 }

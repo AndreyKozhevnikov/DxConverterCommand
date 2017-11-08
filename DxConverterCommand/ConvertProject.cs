@@ -81,6 +81,7 @@ namespace DxConverterCommand {
 
 
             Instance = new ConvertProject(package, _dte);
+          
         }
 
         /// <summary>
@@ -92,28 +93,17 @@ namespace DxConverterCommand {
         /// <param name="e">Event args.</param>
 
         string _solutionDir;
-        public const string workPath = @"c:\Dropbox\Deploy\DXConverterDeploy\";
-        public const string versionsPath = @"c:\Dropbox\Deploy\DXConverterDeploy\versions.xml";
+        string workPath;
+        bool isCloseConverter;
+
+        public static string VersionsPath { get; set; }
+       
         private void MenuItemCallback(object sender, EventArgs e) {
-#if DEBUG
-            //if (!File.Exists(ConvertProject.versionsPath)) {
-            //    XElement xAllVersion = new XElement("AllVersions");
-            //    XElement xInstalledVersion = new XElement("InstalledVersions");
-            //    XElement xVersions = new XElement("Versions");
-            //    xVersions.Add(xAllVersion);
-            //    xVersions.Add(xInstalledVersion);
-            //    var xDoc = new XDocument();
-            //    xDoc.Add(xVersions);
-            //    xDoc.Save(ConvertProject.versionsPath);
-            //}
-            VersionChooser form2 = new VersionChooser(_solutionDir, "test");
-            var wnd2 = new Window();
-            wnd2.Width = 460;
-            wnd2.SizeToContent = SizeToContent.Height;
-            wnd2.Content = form2;
-            wnd2.Title = "ConvertProject";
-            wnd2.ShowDialog();
-#endif
+            ConvertProjectPackage options = package as ConvertProjectPackage;
+            workPath = options.XConverterFolderPath;
+            isCloseConverter = options.IsCloseConverter;
+            VersionsPath = workPath + @"\versions.xml";
+
 
 
             string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
@@ -141,7 +131,7 @@ namespace DxConverterCommand {
                 wnd.Title= "ConvertProject";
                 wnd.ShowDialog();
                 if (wnd.DialogResult == true) {
-                    string st = string.Format("\"{0}\" \"{1}\" true \"{2}\"", _solutionDir, form.Version, form.InstalledVersionPath);
+                    string st = string.Format("\"{0}\" \"{1}\" {2} \"{3}\"", _solutionDir, form.Version,isCloseConverter, form.InstalledVersionPath);
                     ProcessStartInfo startInfo = new ProcessStartInfo();
                     startInfo.FileName = Path.Combine(workPath, "DXConverter.exe");
                     startInfo.Arguments = st;

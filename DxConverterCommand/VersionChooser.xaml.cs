@@ -69,7 +69,7 @@ namespace DxConverterCommand {
 
         public string InstalledVersionPath { get; set; }
         void LoadVersionsForComboBox() {
-            var xDoc = XDocument.Load(ConvertProject.versionsPath);
+            var xDoc = XDocument.Load(ConvertProject.VersionsPath);
             var allVersionElement = xDoc.Element("Versions").Element("AllVersions");
             VersionList = allVersionElement.Elements().Select(x => x.Attribute("Version").Value).ToList();
             var installVersionsElement = xDoc.Element("Versions").Element("InstalledVersions");
@@ -134,7 +134,7 @@ namespace DxConverterCommand {
 
             var xDoc = new XDocument();
             xDoc.Add(xVersions);
-            xDoc.Save(ConvertProject.versionsPath);
+            xDoc.Save(ConvertProject.VersionsPath);
 
 
             //StreamWriter sw = new StreamWriter(filePath, false);
