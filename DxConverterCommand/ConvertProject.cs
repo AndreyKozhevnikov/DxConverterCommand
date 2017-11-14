@@ -94,14 +94,14 @@ namespace DxConverterCommand {
 
         string _solutionDir;
         string workPath;
-        bool isCloseConverter;
+        bool isWaitConverter;
 
         public static string VersionsPath { get; set; }
        
         private void MenuItemCallback(object sender, EventArgs e) {
             ConvertProjectPackage options = package as ConvertProjectPackage;
             workPath = options.XConverterFolderPath;
-            isCloseConverter = options.IsCloseConverter;
+            isWaitConverter = options.IsWaitConverter;
             VersionsPath = workPath + @"\versions.xml";
 
 
@@ -131,7 +131,7 @@ namespace DxConverterCommand {
                 wnd.Title= "ConvertProject";
                 wnd.ShowDialog();
                 if (wnd.DialogResult == true) {
-                    string st = string.Format("\"{0}\" \"{1}\" {2} \"{3}\"", _solutionDir, form.Version,isCloseConverter, form.InstalledVersionPath);
+                    string st = string.Format("\"{0}\" \"{1}\" {2} \"{3}\"", _solutionDir, form.Version,isWaitConverter, form.InstalledVersionPath);
                     ProcessStartInfo startInfo = new ProcessStartInfo();
                     startInfo.FileName = Path.Combine(workPath, "DXConverter.exe");
                     startInfo.Arguments = st;

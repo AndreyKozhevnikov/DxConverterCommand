@@ -84,10 +84,10 @@ namespace DxConverterCommand {
                 return st;
             }
         }
-        public bool IsCloseConverter {
+        public bool IsWaitConverter {
             get {
                 OptionPageGrid page = (OptionPageGrid)GetDialogPage(typeof(OptionPageGrid));
-                var isClose = page.CloseConverterOnFinish;
+                var isClose = page.WaitConverterOnFinish;
                 return isClose;
             }
         }
@@ -112,9 +112,9 @@ namespace DxConverterCommand {
 
         bool waitToExit = false;
         [Category("XConverterPath")]
-        [DisplayName("Close at the end")]
+        [DisplayName("Wait at the end")]
         [Description("Whether to close a converter console at the end")]
-        public bool CloseConverterOnFinish {
+        public bool WaitConverterOnFinish {
             get { return waitToExit; }
             set { waitToExit = value; }
         }
