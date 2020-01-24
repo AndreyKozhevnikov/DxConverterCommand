@@ -56,7 +56,7 @@
         <Parent guid="guidConvertProjectPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Invoke ConvertProject</ButtonText>
+          <ButtonText>Invoke ConvertProject2</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -74,15 +74,15 @@
 
   <Symbols>
     <!-- This is the package guid. -->
-    <GuidSymbol name="guidConvertProjectPackage" value="{c616fdff-2a99-4e89-8c78-530b7e1ef305}" />
+    <GuidSymbol name="guidConvertProjectPackage" value="{cc878b65-8a2b-4fd9-915c-43362aec54c4}" />
 
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidConvertProjectPackageCmdSet" value="{456a20fb-202a-4b8e-961f-9676c2786eca}">
+    <GuidSymbol name="guidConvertProjectPackageCmdSet" value="{f2bdbcad-9f8d-4ab2-8bd4-684a6f267c6d}">
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="ConvertProjectId" value="0x0100" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidImages" value="{f07abae4-9868-4fff-b833-5ea46c891fe6}" >
+    <GuidSymbol name="guidImages" value="{9a71d932-2ebc-4eea-af62-89cecb3bbcf6}" >
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />
