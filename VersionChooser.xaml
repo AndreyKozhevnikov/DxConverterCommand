@@ -6,6 +6,9 @@
              xmlns:local="clr-namespace:DxConverterCommand"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
@@ -24,7 +27,7 @@
         </StackPanel>
         <DockPanel Grid.Column="1" >
             <Button Content="Convert" Click="ConvertButton_Click"  Height="40" DockPanel.Dock="Top" FontSize="20" FontWeight="Bold"/>
-            <Button Content="Update" Click="UpdateButton_Click_1" DockPanel.Dock="Bottom"  Height="20" Visibility="Hidden"/>
+            <Button Content="Update" Click="UpdateButton_Click_1" DockPanel.Dock="Bottom"  Height="20" Visibility="{Binding CanUpdate,Converter={StaticResource BoolToVis}}"/>
             <Border />
         </DockPanel>
     </Grid>

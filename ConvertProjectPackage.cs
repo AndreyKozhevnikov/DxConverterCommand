@@ -27,7 +27,7 @@ namespace DxConverterCommand {
     [Guid(ConvertProjectPackage.PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideOptionPage(typeof(OptionPageGrid), "XConverter", "Project XConverter", 0, 0, true)]
-   
+
     public sealed class ConvertProjectPackage : AsyncPackage {
         /// <summary>
         /// DxConverterCommandPackage GUID string.
@@ -49,8 +49,7 @@ namespace DxConverterCommand {
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             var dte = await GetServiceAsync(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
             var sol = dte.Solution;
-            await ConvertProject.InitializeAsync(this,sol);
-            await TestCommand1.InitializeAsync(this,sol);
+            await ConvertProject.InitializeAsync(this, sol);
         }
 
         public string XConverterFolderPath {
@@ -64,6 +63,14 @@ namespace DxConverterCommand {
             get {
                 OptionPageGrid page = (OptionPageGrid)GetDialogPage(typeof(OptionPageGrid));
                 var isClose = page.WaitConverterOnFinish;
+                return isClose;
+            }
+        }
+
+        public bool CanUpdate {
+            get {
+                OptionPageGrid page = (OptionPageGrid)GetDialogPage(typeof(OptionPageGrid));
+                var isClose = page.CanUpdate;
                 return isClose;
             }
         }
@@ -87,6 +94,15 @@ namespace DxConverterCommand {
         public bool WaitConverterOnFinish {
             get { return waitToExit; }
             set { waitToExit = value; }
+        }
+        
+        bool _canUpdate = false;
+        [Category("XConverterPath")]
+        [DisplayName("CanUpdate")]
+        [Description("CanUpdate")]
+        public bool CanUpdate {
+            get { return _canUpdate; }
+            set { _canUpdate = value; }
         }
     }
 }

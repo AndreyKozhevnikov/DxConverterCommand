@@ -28,12 +28,15 @@ namespace DxConverterCommand {
             InitializeComponent();
         }
         public string Version { get; set; }
-        public VersionChooser(string _solutionDir, string _version) {
-         //   LoadVersionsForComboBox();
+        public VersionChooser(string _solutionDir, string _version,bool _canUpdate) {
+            LoadVersionsForComboBox();
+            CanUpdate = _canUpdate;
             DataContext = this;
             InitializeComponent();
             ComboBoxSelectedVersion = _version;
+
         }
+        public bool CanUpdate { get; set; }
         List<string> versionList;
         public List<string> VersionList {
             get {
