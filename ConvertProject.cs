@@ -9,6 +9,7 @@ using System.Windows;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
 using Process = System.Diagnostics.Process;
 using Task = System.Threading.Tasks.Task;
 
@@ -25,7 +26,7 @@ namespace DxConverterCommand {
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("f2bdbcad-9f8d-4ab2-8bd4-684a6f267c6d");
+        public static readonly Guid CommandSet = new Guid("f2bdbcad-9f8d-4ab2-8bd4-684a6f267c63");
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -68,15 +69,17 @@ namespace DxConverterCommand {
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static async Task InitializeAsync(AsyncPackage package) {
+        public static async Task InitializeAsync(AsyncPackage package,EnvDTE.Solution _sol) {
             // Switch to the main thread - the call to AddCommand in ConvertProject's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
-
+          
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
             Instance = new ConvertProject(package, commandService);
+            Instance.sol = _sol;
         }
-
+        Solution sol;
+     
         string _solutionDir;
         string workPath;
         bool isWaitConverter;
@@ -89,52 +92,56 @@ namespace DxConverterCommand {
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private async void Execute(object sender, EventArgs e) {
+        private  void Execute(object sender, EventArgs e) {
             ConvertProjectPackage options = package as ConvertProjectPackage;
             workPath = options.XConverterFolderPath;
             isWaitConverter = options.IsWaitConverter;
             VersionsPath = workPath + @"\versions.xml";
 
-            DTE dte = await package.GetServiceAsync(typeof(DTE)).ConfigureAwait(false) as DTE;
-            if(dte.Solution.Count == 0) {
-                System.Windows.Forms.MessageBox.Show("Solutions were not found", "Converter Runner");
-                return;
-            }
 
-            ProjectType projectType = GetProjectType(dte.Solution.Projects.Item(1));
-            if(projectType == ProjectType.VSProject) {
-                string version = GetVSProjectVersion(dte.Solution.Projects.Item(1));
-                if(!string.IsNullOrEmpty(dte.Solution.FullName)) {
-                    _solutionDir = Path.GetDirectoryName(dte.Solution.FullName);
-                } else {
-                    _solutionDir = Path.GetDirectoryName(dte.Solution.Projects.Item(1).FullName);
-                }
 
-                VersionChooser form = new VersionChooser(_solutionDir, version);
-                var wnd = new System.Windows.Window();
-                wnd.Width = 460;
-                wnd.SizeToContent = SizeToContent.Height;
-                wnd.Content = form;
-                wnd.Title = "ConvertProject";
-                Application.Current.Dispatcher.Invoke((Action)delegate {
-                    wnd.ShowDialog();
-                    if(wnd.DialogResult == true) {
-                        string st = string.Format("\"{0}\" \"{1}\" {2} \"{3}\"", _solutionDir, form.Version, isWaitConverter, form.InstalledVersionPath);
-                        ProcessStartInfo startInfo = new ProcessStartInfo();
-                        startInfo.FileName = Path.Combine(workPath, "DXConverter.exe");
-                        startInfo.Arguments = st;
-                        Process.Start(startInfo);
-                    }
-                });
-            } else {
-                VsShellUtilities.ShowMessageBox(
-                this.package,
-                "wrong project",
-                "wrong project",
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-            }
+            ////// DTE dte = await package.GetServiceAsync(typeof(DTE)).ConfigureAwait(false) as DTE;
+            ////DTE dte = null;
+            //if(dte.Solution.Count == 0) {
+            //    System.Windows.Forms.MessageBox.Show("Solutions were not found", "Converter Runner");
+            //    return;
+            //}
+
+            //ProjectType projectType = GetProjectType(dte.Solution.Projects.Item(1));
+            //if(projectType == ProjectType.VSProject) {
+            //    string version = GetVSProjectVersion(dte.Solution.Projects.Item(1));
+            //    if(!string.IsNullOrEmpty(dte.Solution.FullName)) {
+            //        _solutionDir = Path.GetDirectoryName(dte.Solution.FullName);
+            //    } else {
+            //        _solutionDir = Path.GetDirectoryName(dte.Solution.Projects.Item(1).FullName);
+            //    }
+
+            //    VersionChooser form = new VersionChooser(_solutionDir, version);
+            //    var wnd = new System.Windows.Window();
+            //    wnd.Width = 460;
+            //    wnd.SizeToContent = SizeToContent.Height;
+            //    wnd.Content = form;
+            //    wnd.Title = "ConvertProject";
+
+            //    Application.Current.Dispatcher.Invoke((Action)delegate {
+            //        wnd.ShowDialog();
+            //        if(wnd.DialogResult == true) {
+            //            string st = string.Format("\"{0}\" \"{1}\" {2} \"{3}\"", _solutionDir, form.Version, isWaitConverter, form.InstalledVersionPath);
+            //            ProcessStartInfo startInfo = new ProcessStartInfo();
+            //            startInfo.FileName = Path.Combine(workPath, "DXConverter.exe");
+            //            startInfo.Arguments = st;
+            //            Process.Start(startInfo);
+            //        }
+            //    });
+            //} else {
+            //    VsShellUtilities.ShowMessageBox(
+            //    this.package,
+            //    "wrong project",
+            //    "wrong project",
+            //    OLEMSGICON.OLEMSGICON_INFO,
+            //    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+            //    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            //}
         }
         string GetVSProjectVersion(EnvDTE.Project project) {
             var vsproject = project.Object as VSLangProj.VSProject;

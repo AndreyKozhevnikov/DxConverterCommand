@@ -15,10 +15,10 @@
         defining some of the constants that we will use inside the file. -->
 
   <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
-  <Extern href="stdidcmd.h"/>
+  <Extern href="stdidcmd.h" />
 
   <!--This header contains the command ids for the menus provided by the shell. -->
-  <Extern href="vsshlids.h"/>
+  <Extern href="vsshlids.h" />
 
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
@@ -37,7 +37,7 @@
          must be a menu. -->
     <Groups>
       <Group guid="guidConvertProjectPackageCmdSet" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
       </Group>
     </Groups>
 
@@ -56,7 +56,21 @@
         <Parent guid="guidConvertProjectPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Invoke ConvertProject2</ButtonText>
+          <ButtonText>Invoke ConvertProject03</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidConvertProjectPackageCmdSet" id="cmdidTestCommand1" priority="0x0100" type="Button">
+        <Parent guid="guidConvertProjectPackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="guidImages1" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Invoke TestCommand111111</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidConvertProjectPackageCmdSet" id="cmdidToolWindow1Command" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+        <Icon guid="guidImages2" id="bmpPic1" />
+        <Strings>
+          <ButtonText>ToolWindow1</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -68,7 +82,9 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\ConvertProject.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
+      <Bitmap guid="guidImages" href="Resources\ConvertProject.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages1" href="Resources\TestCommand1.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages2" href="Resources\ToolWindow1Command.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
     </Bitmaps>
   </Commands>
 
@@ -80,9 +96,29 @@
     <GuidSymbol name="guidConvertProjectPackageCmdSet" value="{f2bdbcad-9f8d-4ab2-8bd4-684a6f267c6d}">
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="ConvertProjectId" value="0x0100" />
+      <IDSymbol value="4129" name="cmdidTestCommand1" />
+      <IDSymbol value="4130" name="cmdidToolWindow1Command" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidImages" value="{9a71d932-2ebc-4eea-af62-89cecb3bbcf6}" >
+    <GuidSymbol name="guidImages" value="{9a71d932-2ebc-4eea-af62-89cecb3bbcf6}">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{cf4943ee-0223-4dfc-b2f1-cf5c3ed9efc2}" name="guidImages1">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{b73cb5ab-7e7f-473e-be10-a545854bb95f}" name="guidImages2">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />

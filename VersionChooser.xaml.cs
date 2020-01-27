@@ -29,7 +29,7 @@ namespace DxConverterCommand {
         }
         public string Version { get; set; }
         public VersionChooser(string _solutionDir, string _version) {
-            LoadVersionsForComboBox();
+         //   LoadVersionsForComboBox();
             DataContext = this;
             InitializeComponent();
             ComboBoxSelectedVersion = _version;

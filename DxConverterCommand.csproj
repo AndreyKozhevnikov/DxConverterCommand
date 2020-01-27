@@ -48,6 +48,7 @@
     <Compile Include="ConvertProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConvertProjectPackage.cs" />
+    <Compile Include="TestCommand1.cs" />
     <Compile Include="VersionChooser.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +80,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\ConvertProject.png" />
+    <Content Include="Resources\TestCommand1.png" />
+    <Content Include="Resources\ToolWindow1Command.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="VersionChooser.xaml">

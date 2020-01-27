@@ -27,6 +27,7 @@ namespace DxConverterCommand {
     [Guid(ConvertProjectPackage.PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideOptionPage(typeof(OptionPageGrid), "XConverter", "Project XConverter", 0, 0, true)]
+   
     public sealed class ConvertProjectPackage : AsyncPackage {
         /// <summary>
         /// DxConverterCommandPackage GUID string.
@@ -46,7 +47,10 @@ namespace DxConverterCommand {
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-    await ConvertProject.InitializeAsync(this);
+            var dte = await GetServiceAsync(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+            var sol = dte.Solution;
+            await ConvertProject.InitializeAsync(this,sol);
+            await TestCommand1.InitializeAsync(this,sol);
         }
 
         public string XConverterFolderPath {
