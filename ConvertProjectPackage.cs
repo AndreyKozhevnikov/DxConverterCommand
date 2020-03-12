@@ -74,7 +74,13 @@ namespace DxConverterCommand {
                 return isClose;
             }
         }
-
+        public bool UseLocalCache {
+            get {
+                OptionPageGrid page = (OptionPageGrid)GetDialogPage(typeof(OptionPageGrid));
+                var useLocalCache = page.UseLocalCache;
+                return useLocalCache;
+            }
+        }
         #endregion
     }
     public class OptionPageGrid : DialogPage {
@@ -103,6 +109,14 @@ namespace DxConverterCommand {
         public bool CanUpdate {
             get { return _canUpdate; }
             set { _canUpdate = value; }
+        }
+        bool _useLocalCache = false;
+        [Category("XConverterPath")]
+        [DisplayName("UseLocalCache")]
+        [Description("UseLocalCache")]
+        public bool UseLocalCache {
+            get { return _useLocalCache; }
+            set { _useLocalCache = value; }
         }
     }
 }

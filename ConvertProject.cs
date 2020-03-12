@@ -110,7 +110,7 @@ namespace DxConverterCommand {
 
                 wnd.ShowDialog();
                 if(wnd.DialogResult == true) {
-                    string st = string.Format("\"{0}\" \"{1}\" {2} \"{3}\"", _solutionDir, form.Version, isWaitConverter, form.InstalledVersionPath);
+                    string st = string.Format("\"{0}\" \"{1}\" {2} \"{3}\" {4}", _solutionDir, form.Version, isWaitConverter, form.InstalledVersionPath, options.UseLocalCache);
                     ProcessStartInfo startInfo = new ProcessStartInfo();
                     startInfo.FileName = Path.Combine(workPath, "DXConverter.exe");
                     startInfo.Arguments = st;
