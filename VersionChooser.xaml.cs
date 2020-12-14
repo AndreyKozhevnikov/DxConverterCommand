@@ -81,7 +81,7 @@ namespace DxConverterCommand {
         public static List<XElement> GetVersions() {
             List<XElement> directories = new List<XElement>();
             try {
-                var lst = Directory.GetDirectories(@"\\CORP\builds\release\DXDlls\");
+                var lst = Directory.GetDirectories(@"\\CORP\builds\codecentral\DXDlls\");
                 foreach(string directory in lst) {
                     var pName = Path.GetFileName(directory);
                     var xEl = new XElement("Version");
