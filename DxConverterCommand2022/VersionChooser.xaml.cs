@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using DxConverterCommand2022;
+using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -72,7 +73,7 @@ namespace DxConverterCommand {
 
         public string InstalledVersionPath { get; set; }
         void LoadVersionsForComboBox() {
-            var xDoc = XDocument.Load(ConvertProject.VersionsPath);
+            var xDoc = XDocument.Load(ConvertCommand.VersionsPath);
             var allVersionElement = xDoc.Element("Versions").Element("AllVersions");
             VersionList = allVersionElement.Elements().Select(x => x.Attribute("Version").Value).ToList();
             InstalledVersionList = GetInstalledVersions();
@@ -136,7 +137,7 @@ namespace DxConverterCommand {
 
             var xDoc = new XDocument();
             xDoc.Add(xVersions);
-            xDoc.Save(ConvertProject.VersionsPath);
+            xDoc.Save(ConvertCommand.VersionsPath);
 
 
             //StreamWriter sw = new StreamWriter(filePath, false);
@@ -145,7 +146,7 @@ namespace DxConverterCommand {
         }
         List<XElement> GetInstalledVersions() {
             List<XElement> installedVersions = new List<XElement>();
-            List<string> versions = GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
+            List<string> versions = GetRegistryVersions("SOFTWARE\\WOW6432Node\\DevExpress\\Components\\");
             const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter-console.exe";
             foreach(string rootPath in versions) {
                 var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
@@ -168,6 +169,9 @@ namespace DxConverterCommand {
             return versValue;
         }
         public List<string> GetRegistryVersions(string path) {
+            var lst23 = Registry.LocalMachine.GetValueNames();
+            var soft = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\DevExpress\\Components");
+            var names3 = soft.GetSubKeyNames();
             var regKey = Registry.LocalMachine.OpenSubKey(path);
             if(regKey == null)
                 return new List<string>();

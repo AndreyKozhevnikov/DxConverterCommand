@@ -1,4 +1,7 @@
-﻿using System;
+﻿using DxConverterCommand;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
@@ -6,24 +9,22 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
-namespace DxConverterCommand {
+namespace DxConverterCommand2022 {
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class ConvertProject {
+    internal sealed class ConvertCommand {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4131;
+        public const int CommandId = 0x0100;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("f2bdbcad-9f8d-4ab2-8bd4-684a6f267c6d");
+        public static readonly Guid CommandSet = new Guid("e16d846b-35a7-4729-8449-aa63517730c0");
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -31,12 +32,12 @@ namespace DxConverterCommand {
         private readonly AsyncPackage package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConvertProject"/> class.
+        /// Initializes a new instance of the <see cref="ConvertCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private ConvertProject(AsyncPackage package, OleMenuCommandService commandService) {
+        private ConvertCommand(AsyncPackage package, OleMenuCommandService commandService) {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
@@ -48,11 +49,11 @@ namespace DxConverterCommand {
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static ConvertProject Instance {
+        public static ConvertCommand Instance {
             get;
             private set;
         }
-
+        
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
@@ -62,28 +63,34 @@ namespace DxConverterCommand {
             }
         }
 
-        public static string VersionsPath { get; internal set; }
-
         /// <summary>
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         public static async Task InitializeAsync(AsyncPackage package, EnvDTE.Solution _sol) {
-            // Switch to the main thread - the call to AddCommand in ConvertProject's constructor requires
+            // Switch to the main thread - the call to AddCommand in ConvertCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new ConvertProject(package, commandService);
+            Instance = new ConvertCommand(package, commandService);
             Instance.sol = _sol;
         }
-        EnvDTE.Solution sol;
 
+        /// <summary>
+        /// This function is the callback used to execute the command when the menu item is clicked.
+        /// See the constructor to see how the menu item is associated with this function using
+        /// OleMenuCommandService service and MenuCommand class.
+        /// </summary>
+        /// <param name="sender">Event sender.</param>
+        /// <param name="e">Event args.</param>
+        EnvDTE.Solution sol;
+        public static string VersionsPath { get; internal set; }
         string workPath;
         bool isWaitConverter;
         string _solutionDir;
         private void Execute(object sender, EventArgs e) {
-            ConvertProjectPackage options = package as ConvertProjectPackage;
+            DxConverterCommand2022Package options = package as DxConverterCommand2022Package;
             workPath = options.XConverterFolderPath;
             isWaitConverter = options.IsWaitConverter;
             VersionsPath = workPath + @"\versions.xml";
@@ -91,7 +98,6 @@ namespace DxConverterCommand {
                 System.Windows.Forms.MessageBox.Show("Solutions were not found", "Converter Runner");
                 return;
             }
-
             ProjectType projectType = GetProjectType(sol.Projects.Item(1));
             if(projectType == ProjectType.VSProject) {
                 string version = GetVSProjectVersion(sol.Projects.Item(1));
@@ -117,14 +123,17 @@ namespace DxConverterCommand {
                     Process.Start(startInfo);
                 }
             } else {
+
                 VsShellUtilities.ShowMessageBox(
-                this.package,
-                sol.FullName + "ttt",
-                "wrong project",
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                              this.package,
+                              sol.FullName + "ttt",
+                              "wrong project",
+                              OLEMSGICON.OLEMSGICON_INFO,
+                              OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                              OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
+            // Show a message box to prove we were here
+        
         }
         string GetVSProjectVersion(EnvDTE.Project project) {
             var vsproject = project.Object as VSLangProj.VSProject;
@@ -145,7 +154,6 @@ namespace DxConverterCommand {
             return ProjectType.Unknown;
         }
     }
-
     enum ProjectType {
         VSProject,
         VSWebSite,

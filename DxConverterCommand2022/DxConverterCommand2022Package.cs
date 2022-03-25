@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Shell;
+using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 
-namespace DxConverterCommand {
+namespace DxConverterCommand2022 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
     /// </summary>
@@ -24,15 +24,14 @@ namespace DxConverterCommand {
     /// </para>
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Guid(ConvertProjectPackage.PackageGuidString)]
+    [Guid(DxConverterCommand2022Package.PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideOptionPage(typeof(OptionPageGrid), "XConverter", "Project XConverter", 0, 0, true)]
-
-    public sealed class ConvertProjectPackage : AsyncPackage {
+    public sealed class DxConverterCommand2022Package : AsyncPackage {
         /// <summary>
-        /// DxConverterCommandPackage GUID string.
+        /// DxConverterCommand2022Package GUID string.
         /// </summary>
-        public const string PackageGuidString = "cc878b65-8a2b-4fd9-915c-43362aec54c4";
+        public const string PackageGuidString = "74e60260-5424-4200-881a-82fb7ce1d903";
 
         #region Package Members
 
@@ -49,8 +48,9 @@ namespace DxConverterCommand {
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             var dte = await GetServiceAsync(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
             var sol = dte.Solution;
-            await ConvertProject.InitializeAsync(this, sol);
+            await ConvertCommand.InitializeAsync(this, sol);
         }
+
 
         public string XConverterFolderPath {
             get {
@@ -81,8 +81,10 @@ namespace DxConverterCommand {
                 return useLocalCache;
             }
         }
+
         #endregion
     }
+
     public class OptionPageGrid : DialogPage {
         private string xConverterPath = @"\\corp\internal\common\4Kozhevnikov\Deploy\DXConverterDeploy\";
         [Category("XConverterPath")]
@@ -101,7 +103,7 @@ namespace DxConverterCommand {
             get { return waitToExit; }
             set { waitToExit = value; }
         }
-        
+
         bool _canUpdate = false;
         [Category("XConverterPath")]
         [DisplayName("CanUpdate")]
