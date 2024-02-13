@@ -86,7 +86,7 @@ namespace DxConverterCommand2022 {
     }
 
     public class OptionPageGrid : DialogPage {
-        private string xConverterPath = @"\\corp\internal\common\4Kozhevnikov\Deploy\DXConverterDeploy\";
+        private string xConverterPath = @"\\fs\internal\common\4Kozhevnikov\Deploy\DXConverterDeploy\";
         [Category("XConverterPath")]
         [DisplayName("XConverterPath")]
         [Description("Path to DXConverter folder")]
@@ -112,7 +112,7 @@ namespace DxConverterCommand2022 {
             get { return _canUpdate; }
             set { _canUpdate = value; }
         }
-        bool _useLocalCache = false;
+        bool _useLocalCache = true;
         [Category("XConverterPath")]
         [DisplayName("UseLocalCache")]
         [Description("UseLocalCache")]
